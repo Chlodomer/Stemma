@@ -248,28 +248,9 @@
             margin-bottom: 0.3rem;
         }
 
-        /* Animation classes */
-        .edge-entering {
-            opacity: 0;
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-        }
-
-        .edge-entered {
-            opacity: 1;
-            stroke-dashoffset: 0;
-            transition: stroke-dashoffset 1.5s ease, opacity 0.5s ease;
-        }
-
-        .node-entering {
-            opacity: 0;
-            transform: scale(0.3);
-        }
-
-        .node-entered {
-            opacity: 1;
-            transform: scale(1);
-            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* Hover and interaction effects */
+        .family-button:hover {
+            transform: translateY(-1px);
         }
     </style>
 </head>
@@ -905,18 +886,16 @@
 
             // Animate edges if requested
             if (animate) {
-                links.each(function(d, i) {
-                    if (d.from.includes('_family')) {
-                        d3.select(this)
-                            .classed('edge-entering', true)
-                            .transition()
-                            .delay(i * 100)
-                            .duration(1500)
-                            .ease(d3.easeCircleOut)
-                            .classed('edge-entering', false)
-                            .classed('edge-entered', true);
-                    }
-                });
+                links.filter(d => d.from.includes('_family'))
+                    .style('opacity', 0)
+                    .style('stroke-dasharray', '1000')
+                    .style('stroke-dashoffset', '1000')
+                    .transition()
+                    .delay((d, i) => i * 100)
+                    .duration(1500)
+                    .ease(d3.easeCircleOut)
+                    .style('opacity', 0.7)
+                    .style('stroke-dashoffset', '0');
             }
 
             // Create node groups
@@ -967,13 +946,13 @@
             if (animate) {
                 nodeGroups.filter(d => d.type === 'witness')
                     .style('opacity', 0)
-                    .style('transform', 'scale(0.3)')
+                    .attr('transform', d => `translate(${d.x}, ${d.y}) scale(0.3)`)
                     .transition()
-                    .delay((d, i) => 200 + i * 50)
+                    .delay((d, i) => 500 + i * 100)
                     .duration(800)
                     .ease(d3.easeBackOut.overshoot(1.2))
                     .style('opacity', 1)
-                    .style('transform', 'scale(1)');
+                    .attr('transform', d => `translate(${d.x}, ${d.y}) scale(1)`);
             }
 
             // Add hover effects
@@ -1004,13 +983,16 @@
             const wasExpanded = expandedFamilies.has(familyId);
             
             if (wasExpanded) {
+                // Collapsing: remove from set
                 expandedFamilies.delete(familyId);
             } else {
+                // Expanding: add to set
                 expandedFamilies.add(familyId);
             }
             
             updateFamilyButtons();
-            render(!wasExpanded); // Animate when expanding
+            // Animate when expanding (when wasExpanded was false)
+            render(!wasExpanded);
         }
 
         // Update family button states
