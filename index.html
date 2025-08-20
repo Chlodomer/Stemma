@@ -887,7 +887,10 @@
             // Animate edges if requested - only from the specific expanded family
             if (animate && expandedFamily) {
                 const familyNodeId = `${expandedFamily}_family`;
-                links.filter(d => d.from === familyNodeId)
+                const edgesToAnimate = links.filter(d => d.from === familyNodeId);
+                console.log(`Animating ${edgesToAnimate.size()} edges from ${familyNodeId}`);
+                
+                edgesToAnimate
                     .style('opacity', 0)
                     .style('stroke-dasharray', '1000')
                     .style('stroke-dashoffset', '1000')
@@ -982,16 +985,19 @@
         // Enhanced toggle family with animation
         function toggleFamily(familyId) {
             const wasExpanded = expandedFamilies.has(familyId);
+            console.log(`Toggling family ${familyId}, was expanded: ${wasExpanded}`);
             
             if (wasExpanded) {
                 // Collapsing: remove from set
                 expandedFamilies.delete(familyId);
+                console.log(`Collapsed ${familyId}, expanded families:`, [...expandedFamilies]);
                 // No animation when collapsing
                 updateFamilyButtons();
                 render(false);
             } else {
                 // Expanding: add to set
                 expandedFamilies.add(familyId);
+                console.log(`Expanded ${familyId}, expanded families:`, [...expandedFamilies]);
                 updateFamilyButtons();
                 // Animate when expanding, pass the specific family
                 render(true, familyId);
