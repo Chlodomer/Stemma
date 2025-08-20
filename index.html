@@ -842,7 +842,7 @@
         }
 
         // Enhanced render function with animations
-        function render(animate = false) {
+        function render(animate = false, expandedFamily = null) {
             const nodes = buildNodes();
             const nodeIds = new Set(nodes.map(n => n.id));
             const edges = stemmaData.edges.filter(e => 
@@ -884,14 +884,15 @@
                     return targetNode ? targetNode.y : 0;
                 });
 
-            // Animate edges if requested
-            if (animate) {
-                links.filter(d => d.from.includes('_family'))
+            // Animate edges if requested - only from the specific expanded family
+            if (animate && expandedFamily) {
+                const familyNodeId = `${expandedFamily}_family`;
+                links.filter(d => d.from === familyNodeId)
                     .style('opacity', 0)
                     .style('stroke-dasharray', '1000')
                     .style('stroke-dashoffset', '1000')
                     .transition()
-                    .delay((d, i) => i * 100)
+                    .delay((d, i) => i * 150)
                     .duration(1500)
                     .ease(d3.easeCircleOut)
                     .style('opacity', 0.7)
@@ -942,13 +943,13 @@
                 .style('pointer-events', 'none')
                 .text(d => d.label);
 
-            // Animate new nodes
-            if (animate) {
-                nodeGroups.filter(d => d.type === 'witness')
+            // Animate new nodes - only from the specific expanded family
+            if (animate && expandedFamily) {
+                nodeGroups.filter(d => d.type === 'witness' && d.family === expandedFamily)
                     .style('opacity', 0)
                     .attr('transform', d => `translate(${d.x}, ${d.y}) scale(0.3)`)
                     .transition()
-                    .delay((d, i) => 500 + i * 100)
+                    .delay((d, i) => 800 + i * 100)
                     .duration(800)
                     .ease(d3.easeBackOut.overshoot(1.2))
                     .style('opacity', 1)
@@ -985,14 +986,16 @@
             if (wasExpanded) {
                 // Collapsing: remove from set
                 expandedFamilies.delete(familyId);
+                // No animation when collapsing
+                updateFamilyButtons();
+                render(false);
             } else {
                 // Expanding: add to set
                 expandedFamilies.add(familyId);
+                updateFamilyButtons();
+                // Animate when expanding, pass the specific family
+                render(true, familyId);
             }
-            
-            updateFamilyButtons();
-            // Animate when expanding (when wasExpanded was false)
-            render(!wasExpanded);
         }
 
         // Update family button states
