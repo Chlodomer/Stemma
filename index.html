@@ -280,14 +280,14 @@
                     </div>
 
                     <div class="family-section">
-                        <button class="family-button expanded" data-family="B" style="--family-color: #3498db;">
+                        <button class="family-button" data-family="B" style="--family-color: #3498db;">
                             <div>
                                 <div>Class B - Antiquissimi</div>
                                 <div class="family-info">Oldest manuscripts (VII-VIII c.)</div>
                             </div>
                             <div>
                                 <span class="manuscript-count">6</span>
-                                <span class="toggle">▼</span>
+                                <span class="toggle">▶</span>
                             </div>
                         </button>
                     </div>
@@ -763,8 +763,8 @@
             ]
         };
 
-        // State
-        let expandedFamilies = new Set(['B']);
+        // State - start with all families collapsed
+        let expandedFamilies = new Set();
         let selectedNode = null;
         let animationDelay = 0;
 
@@ -903,7 +903,6 @@
                     const edgeKey = `${d.from}-${d.to}`;
                     return d.from === familyNodeId && !existingEdges.has(edgeKey);
                 });
-                console.log(`Animating ${edgesToAnimate.size()} NEW edges from ${familyNodeId}`);
                 
                 edgesToAnimate
                     .style('opacity', 0)
@@ -968,7 +967,6 @@
                            d.family === expandedFamily && 
                            !existingNodes.has(d.id);
                 });
-                console.log(`Animating ${nodesToAnimate.size()} NEW nodes from family ${expandedFamily}`);
                 
                 nodesToAnimate
                     .style('opacity', 0)
@@ -1007,19 +1005,16 @@
         // Enhanced toggle family with animation
         function toggleFamily(familyId) {
             const wasExpanded = expandedFamilies.has(familyId);
-            console.log(`Toggling family ${familyId}, was expanded: ${wasExpanded}`);
             
             if (wasExpanded) {
                 // Collapsing: remove from set
                 expandedFamilies.delete(familyId);
-                console.log(`Collapsed ${familyId}, expanded families:`, [...expandedFamilies]);
                 // No animation when collapsing
                 updateFamilyButtons();
                 render(false);
             } else {
                 // Expanding: add to set
                 expandedFamilies.add(familyId);
-                console.log(`Expanded ${familyId}, expanded families:`, [...expandedFamilies]);
                 updateFamilyButtons();
                 // Animate when expanding, pass the specific family
                 render(true, familyId);
