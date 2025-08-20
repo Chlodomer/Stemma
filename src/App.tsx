@@ -6,11 +6,18 @@ import Controls from './components/Controls';
 import './App.css';
 
 function App() {
-  const { initializeNodes } = useStemmaStore();
+  const { initializeNodes, nodes, data } = useStemmaStore();
 
   useEffect(() => {
+    console.log('App mounted, initializing nodes...');
+    console.log('Data families:', data.families.length);
+    console.log('Data witnesses:', data.witnesses.length);
     initializeNodes();
   }, [initializeNodes]);
+
+  useEffect(() => {
+    console.log('Nodes updated:', nodes.length);
+  }, [nodes]);
 
   return (
     <div className="app">

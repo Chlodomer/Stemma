@@ -24,7 +24,11 @@ const StemmaGraph: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!svgRef.current || nodes.length === 0) return;
+    console.log('StemmaGraph render, nodes:', nodes.length);
+    if (!svgRef.current || nodes.length === 0) {
+      console.log('StemmaGraph: No SVG ref or no nodes, returning');
+      return;
+    }
 
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
