@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useStemmaStore } from './stores/stemmaStore';
 import StemmaGraph from './components/StemmaGraph';
 import NodeDetails from './components/NodeDetails';

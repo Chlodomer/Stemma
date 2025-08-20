@@ -1,6 +1,6 @@
 import React from 'react';
 import { useStemmaStore } from '../stores/stemmaStore';
-import { Search, Filter, Eye, Download, RotateCcw } from 'lucide-react';
+import { Search, Eye, Download, RotateCcw } from 'lucide-react';
 
 const Controls: React.FC = () => {
   const { 

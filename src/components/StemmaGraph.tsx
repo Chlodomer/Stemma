@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { useStemmaStore } from '../stores/stemmaStore';
 import { NodeData, Edge } from '../types';
@@ -31,7 +31,6 @@ const StemmaGraph: React.FC = () => {
 
     const width = 1200;
     const height = 800;
-    const margin = { top: 50, right: 50, bottom: 50, left: 50 };
 
     // Create filtered edges based on current nodes
     const nodeIds = new Set(nodes.map(n => n.id));
@@ -41,7 +40,7 @@ const StemmaGraph: React.FC = () => {
 
     // Create force simulation
     const simulation = d3.forceSimulation(nodes as any)
-      .force('link', d3.forceLink(visibleEdges)
+      .force('link', d3.forceLink(visibleEdges as any)
         .id((d: any) => d.id)
         .distance(100)
       )
@@ -116,7 +115,7 @@ const StemmaGraph: React.FC = () => {
 
     // Add evidence badges if enabled
     if (showEvidence) {
-      nodeGroups.filter((d: NodeData) => d.data && 'citations' in d.data)
+      nodeGroups.filter((d: NodeData) => Boolean(d.data && 'citations' in d.data))
         .append('circle')
         .attr('cx', 15)
         .attr('cy', -15)
@@ -125,7 +124,7 @@ const StemmaGraph: React.FC = () => {
         .style('stroke', '#fff')
         .style('stroke-width', 1);
 
-      nodeGroups.filter((d: NodeData) => d.data && 'citations' in d.data)
+      nodeGroups.filter((d: NodeData) => Boolean(d.data && 'citations' in d.data))
         .append('text')
         .attr('x', 15)
         .attr('y', -15)
@@ -135,7 +134,7 @@ const StemmaGraph: React.FC = () => {
         .style('font-size', '10px')
         .style('font-weight', 'bold')
         .style('pointer-events', 'none')
-        .text((d: NodeData) => d.data && 'citations' in d.data ? (d.data as any).citations.length : '');
+        .text((d: NodeData) => d.data && 'citations' in d.data ? (d.data as any).citations.length : 0);
     }
 
     // Add click handlers
@@ -150,7 +149,7 @@ const StemmaGraph: React.FC = () => {
     });
 
     // Add hover effects
-    nodeGroups.on('mouseenter', (event: MouseEvent, d: NodeData) => {
+    nodeGroups.on('mouseenter', (event: MouseEvent) => {
       d3.select(event.currentTarget as any)
         .select('circle')
         .style('stroke-width', 3)
