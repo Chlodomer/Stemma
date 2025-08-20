@@ -849,6 +849,18 @@
                 nodeIds.has(e.from) && nodeIds.has(e.to)
             );
 
+            // Store existing node and edge IDs before clearing
+            const existingNodes = new Set();
+            const existingEdges = new Set();
+            
+            g.selectAll('.node').each(function(d) {
+                if (d) existingNodes.add(d.id);
+            });
+            
+            g.selectAll('.link').each(function(d) {
+                if (d) existingEdges.add(`${d.from}-${d.to}`);
+            });
+
             // Clear previous content
             g.selectAll('*').remove();
             animationDelay = 0;
@@ -884,11 +896,14 @@
                     return targetNode ? targetNode.y : 0;
                 });
 
-            // Animate edges if requested - only from the specific expanded family
+            // Animate edges if requested - only NEW edges from the specific expanded family
             if (animate && expandedFamily) {
                 const familyNodeId = `${expandedFamily}_family`;
-                const edgesToAnimate = links.filter(d => d.from === familyNodeId);
-                console.log(`Animating ${edgesToAnimate.size()} edges from ${familyNodeId}`);
+                const edgesToAnimate = links.filter(d => {
+                    const edgeKey = `${d.from}-${d.to}`;
+                    return d.from === familyNodeId && !existingEdges.has(edgeKey);
+                });
+                console.log(`Animating ${edgesToAnimate.size()} NEW edges from ${familyNodeId}`);
                 
                 edgesToAnimate
                     .style('opacity', 0)
@@ -946,9 +961,16 @@
                 .style('pointer-events', 'none')
                 .text(d => d.label);
 
-            // Animate new nodes - only from the specific expanded family
+            // Animate new nodes - only NEW witnesses from the specific expanded family
             if (animate && expandedFamily) {
-                nodeGroups.filter(d => d.type === 'witness' && d.family === expandedFamily)
+                const nodesToAnimate = nodeGroups.filter(d => {
+                    return d.type === 'witness' && 
+                           d.family === expandedFamily && 
+                           !existingNodes.has(d.id);
+                });
+                console.log(`Animating ${nodesToAnimate.size()} NEW nodes from family ${expandedFamily}`);
+                
+                nodesToAnimate
                     .style('opacity', 0)
                     .attr('transform', d => `translate(${d.x}, ${d.y}) scale(0.3)`)
                     .transition()
