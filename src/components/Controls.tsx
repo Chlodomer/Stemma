@@ -3,12 +3,14 @@ import { useStemmaStore } from '../stores/stemmaStore';
 import { Search, Eye, Download, RotateCcw } from 'lucide-react';
 
 const Controls: React.FC = () => {
-  const { 
-    searchQuery, 
-    viewMode, 
+  const {
+    searchQuery,
+    viewMode,
+    layoutMode,
     showEvidence,
-    setSearchQuery, 
-    setViewMode, 
+    setSearchQuery,
+    setViewMode,
+    setLayoutMode,
     toggleEvidence,
     expandedFamilies,
     toggleFamily,
@@ -106,6 +108,29 @@ const Controls: React.FC = () => {
         <div className="control-group">
           <label>
             <input
+              type="radio"
+              name="layoutMode"
+              value="network"
+              checked={layoutMode === 'network'}
+              onChange={(e) => setLayoutMode(e.target.value as 'network' | 'tree')}
+            />
+            Network Layout
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="layoutMode"
+              value="tree"
+              checked={layoutMode === 'tree'}
+              onChange={(e) => setLayoutMode(e.target.value as 'network' | 'tree')}
+            />
+            Tree Layout
+          </label>
+        </div>
+
+        <div className="control-group">
+          <label>
+            <input
               type="checkbox"
               checked={showEvidence}
               onChange={toggleEvidence}
@@ -135,23 +160,23 @@ const Controls: React.FC = () => {
         <h4>Legend</h4>
         <div className="legend">
           <div className="legend-item">
-            <div className="legend-color" style={{ background: '#95a5a6' }}></div>
+            <div className="legend-color" style={{ background: '#4a4a4a' }}></div>
             <span>Archetype</span>
           </div>
           <div className="legend-item">
-            <div className="legend-color" style={{ background: '#e74c3c' }}></div>
+            <div className="legend-color" style={{ background: '#c47a4a' }}></div>
             <span>Class A (Complete)</span>
           </div>
           <div className="legend-item">
-            <div className="legend-color" style={{ background: '#3498db' }}></div>
+            <div className="legend-color" style={{ background: '#5d7285' }}></div>
             <span>Class B (Oldest)</span>
           </div>
           <div className="legend-item">
-            <div className="legend-color" style={{ background: '#2ecc71' }}></div>
+            <div className="legend-color" style={{ background: '#7a8a5c' }}></div>
             <span>Class C</span>
           </div>
           <div className="legend-item">
-            <div className="legend-color" style={{ background: '#f39c12' }}></div>
+            <div className="legend-color" style={{ background: '#9a8b7a' }}></div>
             <span>Class D</span>
           </div>
           
