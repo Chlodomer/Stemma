@@ -12,6 +12,7 @@ interface StemmaStore extends ViewState {
   setSearchQuery: (query: string) => void;
   setFilters: (filters: Partial<ViewState['filters']>) => void;
   setViewMode: (mode: 'family' | 'all') => void;
+  setLayoutMode: (mode: 'network' | 'tree') => void;
   toggleEvidence: () => void;
   initializeNodes: () => void;
 }
@@ -30,20 +31,23 @@ export const useStemmaStore = create<StemmaStore>((set, get) => ({
     scripts: []
   },
   viewMode: 'family',
+  layoutMode: 'network',
   showEvidence: false,
 
   // Actions
   setSelectedNode: (nodeId) => set({ selectedNode: nodeId }),
 
-  toggleFamily: (familyId) => set((state) => {
+  toggleFamily: (familyId) => {
+    const state = get();
     const newExpanded = new Set(state.expandedFamilies);
     if (newExpanded.has(familyId)) {
       newExpanded.delete(familyId);
     } else {
       newExpanded.add(familyId);
     }
-    return { expandedFamilies: newExpanded };
-  }),
+    set({ expandedFamilies: newExpanded });
+    get().initializeNodes();
+  },
 
   setSearchQuery: (query) => set({ searchQuery: query }),
 
@@ -52,6 +56,8 @@ export const useStemmaStore = create<StemmaStore>((set, get) => ({
   })),
 
   setViewMode: (mode) => set({ viewMode: mode }),
+
+  setLayoutMode: (mode) => set({ layoutMode: mode }),
 
   toggleEvidence: () => set((state) => ({ showEvidence: !state.showEvidence })),
 

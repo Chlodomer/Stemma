@@ -65,5 +65,6 @@ export interface ViewState {
     scripts: string[];
   };
   viewMode: 'family' | 'all';
+  layoutMode: 'network' | 'tree';
   showEvidence: boolean;
 }
