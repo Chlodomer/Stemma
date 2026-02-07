@@ -421,6 +421,13 @@ body {
   border-radius: 2px;
   font-size: 0.8rem;
   font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.citation-badge:hover {
+  background: #d4652a;
 }
 
 .family-witnesses {

@@ -8,6 +8,13 @@ import {
 } from 'lucide-react';
 import { computeWitnessInsights, computeFamilyInsights } from '../utils/insights';
 
+const DMGH_BASE = 'https://www.dmgh.de/mgh_ss_rer_merov_1_1/index.htm';
+
+function dmghUrl(mghPage: string): string {
+  const firstPage = mghPage.split('-')[0].trim();
+  return `${DMGH_BASE}#page/${firstPage}/mode/1up`;
+}
+
 const NodeDetails: React.FC = () => {
   const { selectedNode, nodes, data, setSelectedNode } = useStemmaStore();
 
@@ -115,9 +122,9 @@ const NodeDetails: React.FC = () => {
               <h4>MGH Citations</h4>
               <div className="citations">
                 {witness.citations.map((citation, idx) => (
-                  <span key={idx} className="citation-badge">
+                  <a key={idx} className="citation-badge" href={dmghUrl(citation.mghPage)} target="_blank" rel="noopener noreferrer">
                     p. {citation.mghPage}
-                  </span>
+                  </a>
                 ))}
               </div>
             </div>
@@ -247,9 +254,9 @@ const NodeDetails: React.FC = () => {
               <h4>MGH Evidence</h4>
               <div className="citations">
                 {family.evidence.map((evidence, idx) => (
-                  <span key={idx} className="citation-badge">
+                  <a key={idx} className="citation-badge" href={dmghUrl(evidence.mghPage)} target="_blank" rel="noopener noreferrer">
                     p. {evidence.mghPage}
-                  </span>
+                  </a>
                 ))}
               </div>
             </div>
